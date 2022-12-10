@@ -13,10 +13,15 @@
         <h1>Odd duck</h1>
     </header>
     <main>
-        <div>
-            <img id="left-product" src="" alt="">
-            <img id="middle-product" src="" alt="">
-            <img id="right-product" src="" alt="">
+        <form action="" id="productsForm">
+        <label for="numberOfRounds">Number of rounds:</label>
+        <input type="number" id="numberOfRounds" name="numberOfRounds" value="25" min="1" max="50">
+        <input type="submit" id="sumbit" value="start">
+    </form> 
+        <div id="productsDiv">
+            <img id="left-product" src="">
+            <img id="middle-product" src="">
+            <img id="right-product" src="">
             <ul id="result">
 
             </ul>
