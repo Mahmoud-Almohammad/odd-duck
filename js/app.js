@@ -9,6 +9,12 @@ let middleProduct = document.getElementById('middle-product');
 let rightProduct = document.getElementById('right-product');
 let maxAttempts = 25;
 let userAttemptsCounter = 0;
+let names = [];
+let votes = [];
+let view = [];
+let previousLeftProduct = -1;
+let previousMiddleProduct = -1;
+let previousRightProduct = -1;
 
 function Products (name,source) {
   this.name = name;
@@ -16,6 +22,7 @@ function Products (name,source) {
   this.votes = 0;
   this.display = 0;
   Products.prototype.allProducts.push(this);
+  names.push(name);
 }
 
 new Products ('bag','img/bag.jpg');
@@ -48,15 +55,26 @@ function userSubmit (e){
 }
 
 function generateRandomProductIndex (){
-  leftProductIndex = generateRandomNumber();
+  let spamIndex = [previousLeftProduct,previousMiddleProduct,previousRightProduct];
+
+  do{ leftProductIndex = generateRandomNumber();
+  }while(spamIndex.includes(leftProductIndex));
+
+  spamIndex.push(leftProductIndex);
+  previousLeftProduct = leftProductIndex;
 
   do {
     middleProductIndex = generateRandomNumber();
-  }while(leftProductIndex === middleProductIndex);
+  }while(spamIndex.includes(middleProductIndex));
+
+  spamIndex.push(middleProductIndex);
+  previousMiddleProduct = middleProductIndex;
 
   do {
     rightProductIndex = generateRandomNumber();
-  } while(leftProductIndex === rightProductIndex || middleProductIndex === rightProductIndex);
+  } while(spamIndex.includes(rightProductIndex));
+
+  previousRightProduct = rightProductIndex;
 }
 
 generateRandomProductIndex ();
@@ -100,6 +118,11 @@ function gettingUserClicks(event){
 
   } else{
 
+    for(let i = 0; i < Products.prototype.allProducts.length; i++){
+      votes.push(Products.prototype.allProducts[i].votes);
+      view.push(Products.prototype.allProducts[i].display);
+    }
+
     leftProduct.removeEventListener('click', gettingUserClicks);
     middleProduct.removeEventListener('click', gettingUserClicks);
     rightProduct.removeEventListener('click', gettingUserClicks);
@@ -118,6 +141,33 @@ function gettingUserClicks(event){
         resultItems.textContent = Products.prototype.allProducts[i].name + ':'+ Products.prototype.allProducts[i].votes + ' votes and displayed '+ Products.prototype.allProducts[i].display + ' times';
         result.appendChild(resultItems);
       }
+
+      const ctx = document.getElementById('myChart');
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: names,
+          datasets: [{
+            label: 'voted',
+            data: votes,
+            borderWidth: 1
+          }
+          ,{
+            label: 'Viewed',
+            data: view,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
       viewResult.removeEventListener('click', showREsult);
     }
   }
