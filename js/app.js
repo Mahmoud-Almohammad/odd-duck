@@ -87,6 +87,20 @@ function render (){
 
 render();
 
+function createLocalStorage() {
+  let userData = JSON.stringify(Products.prototype.allProducts);
+  localStorage.setItem('userData',userData);
+}
+
+function getData(){
+  let getUserData = localStorage.getItem('userData');
+  let jsProducts = JSON.parse(getUserData);
+  if(jsProducts) { 
+    Products.prototype.allProducts = jsProducts;
+  }
+  render();
+}
+
 leftProduct.addEventListener('click', gettingUserClicks);
 middleProduct.addEventListener('click', gettingUserClicks);
 rightProduct.addEventListener('click', gettingUserClicks);
@@ -113,6 +127,7 @@ function gettingUserClicks(event){
       Products.prototype.allProducts[rightProductIndex].display++;
     }
 
+    createLocalStorage();
     generateRandomProductIndex();
     render();
 
@@ -176,3 +191,5 @@ function gettingUserClicks(event){
 function generateRandomNumber (){
   return Math.floor(Math.random() * Products.prototype.allProducts.length);
 }
+
+getData();
